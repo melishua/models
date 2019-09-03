@@ -36,10 +36,9 @@ PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
 NUM_CLASSES = 90
 
 # Download Model
-if not path.exists(MODEL_FILE):
+if not path.exists(MODEL_NAME):
     opener = urllib.request.URLopener()
     opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
-if not path.exists(MODEL_NAME):
     tar_file = tarfile.open(MODEL_FILE)
     for file in tar_file.getmembers():
         file_name = os.path.basename(file.name)

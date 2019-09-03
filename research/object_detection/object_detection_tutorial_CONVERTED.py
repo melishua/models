@@ -14,6 +14,9 @@ from PIL import Image
 from utils import label_map_util
 from utils import visualization_utils as vis_util
 
+import os.path
+from os import path
+
 # Define the video stream
 cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
 
@@ -33,13 +36,14 @@ PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
 NUM_CLASSES = 90
 
 # Download Model
-opener = urllib.request.URLopener()
-opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
-tar_file = tarfile.open(MODEL_FILE)
-for file in tar_file.getmembers():
-    file_name = os.path.basename(file.name)
-    if 'frozen_inference_graph.pb' in file_name:
-        tar_file.extract(file, os.getcwd())
+if not path.exists(MODEL_FILE):
+    opener = urllib.request.URLopener()
+    opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
+    tar_file = tarfile.open(MODEL_FILE)
+    for file in tar_file.getmembers():
+        file_name = os.path.basename(file.name)
+        if 'frozen_inference_graph.pb' in file_name:
+            tar_file.extract(file, os.getcwd())
 
 
 # Load a (frozen) Tensorflow model into memory.

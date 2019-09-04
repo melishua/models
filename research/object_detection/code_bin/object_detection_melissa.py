@@ -39,10 +39,11 @@ cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)   # float
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) # float
 # Define score needed to accept the output
-min_score_thresh = 0.6
+tf_min_score_thresh = 0.6
 
 # Initiate speech engine
 speech_engn = pyttsx3.init()
+notify_perct_thresh = 0.3
 
 #------------------------------------------------------------------------------
 # Detection Functions
@@ -122,7 +123,7 @@ def TensorFlowDetection():
                     feed_dict={image_tensor: image_np_expanded})
 
                 # Print result to console
-                # print ([category_index.get(value) for index,value in enumerate(classes[0]) if scores[0,index] > min_score_thresh])
+                # print ([category_index.get(value) for index,value in enumerate(classes[0]) if scores[0,index] > tf_min_score_thresh])
 
                 # Initiate facial recongition if detected a person
                 if isTherePerson(classes, scores, category_index):
@@ -141,14 +142,14 @@ def TensorFlowDetection():
                     line_thickness=8)
 
                 # Display output
-                cv2.imshow('object detection', cv2.resize(image_np, (800, 460)))
+                cv2.imshow('object detection', image_np)
 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     cv2.destroyAllWindows()
                     break
 
 #------------------------------------------------------------------------------
-# Voice Functions
+# Voice Notification Functions
 #------------------------------------------------------------------------------
 def voiceNotification(str_txt):
     speech_engn.say(str_txt)
@@ -174,9 +175,10 @@ def notifyObject(obj):
 
 # def filterOutput():
 #     print ("Hi")
+
 def isTherePerson(classes, scores, category_index):
     for index,value in enumerate(classes[0]):
-        if scores[0,index] > min_score_thresh:
+        if scores[0,index] > tf_min_score_thresh:
             # example output: {'id': 1, 'name': 'person'}
             out_dict = category_index.get(value)
             if out_dict['id'] == 1:

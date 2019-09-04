@@ -24,7 +24,7 @@ from PIL import Image
 from utils import label_map_util
 from utils import visualization_utils as vis_util
 
-# Logic
+# For file check in directory
 import os.path
 from os import path
 
@@ -37,8 +37,16 @@ cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
 min_score_thresh = 0.5
 
 #------------------------------------------------------------------------------
-# TensorFlow Detection API
+# Detection Functions
 #------------------------------------------------------------------------------
+
+# Function: TensorFlowDetection
+# Input: None
+# Output: Video from the camera with labelled class and score
+# Description: 
+#   It is a modified version of the object detection API from Tensorflow. The
+#   purpose of this function is to be able to detect basic objects in video
+#   stream coming from camera source
 def TensorFlowDetection():
     # What model to download.
     # Models can bee found here: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
@@ -85,7 +93,6 @@ def TensorFlowDetection():
     with detection_graph.as_default():
         with tf.Session(graph=detection_graph) as sess:
             while True:
-
                 # Read frame from camera
                 ret, image_np = cap.read()
                 # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
@@ -107,14 +114,19 @@ def TensorFlowDetection():
                     feed_dict={image_tensor: image_np_expanded})
 
                 # Print result to console
-                print [category_index.get(value) for index,value in enumerate(classes[0]) if scores[0,index] > min_score_thresh]
+                # print ([category_index.get(value) for index,value in enumerate(classes[0]) if scores[0,index] > min_score_thresh])
+
+                # Initiate facial recongition if detected a person
+                if isTherePerson(classes, scores, category_index):
+                    # Call second API for facial recongition
+                    print("There is a person!");
 
                 # Visualization of the results of a detection.
                 vis_util.visualize_boxes_and_labels_on_image_array(
                     image_np,
                     np.squeeze(boxes),
                     np.squeeze(classes).astype(np.int32),
-                    np.squeeze(scores),
+                    # np.squeeze(scores),
                     category_index,
                     use_normalized_coordinates=True,
                     line_thickness=8)
@@ -126,6 +138,23 @@ def TensorFlowDetection():
                     cv2.destroyAllWindows()
                     break
 
+def isTherePerson(classes, scores, category_index):
+    for index,value in enumerate(classes[0]):
+    if scores[0,index] > min_score_thresh:
+        recongition_output_array = category_index.get(value)
+        for d in recongition_output_array:
+            if d['id'] == 0:
+                return True;
+    return False;
+
+# def facialRecongition():
+#     print ("Hi")
+
+# def voiceNotification():
+#     print ("Hi")
+
+# def filterOutput():
+#     print ("Hi")
 
 if __name__ == "__main__":
     try:

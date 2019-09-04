@@ -28,6 +28,9 @@ from utils import visualization_utils as vis_util
 import os.path
 from os import path
 
+# For text to speech
+import pyttsx3
+
 #------------------------------------------------------------------------------
 # Constant declaration
 #------------------------------------------------------------------------------
@@ -37,6 +40,9 @@ width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)   # float
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) # float
 # Define score needed to accept the output
 min_score_thresh = 0.6
+
+# Initiate speech engine
+speech_engn = pyttsx3.init()
 
 #------------------------------------------------------------------------------
 # Detection Functions
@@ -141,6 +147,33 @@ def TensorFlowDetection():
                     cv2.destroyAllWindows()
                     break
 
+#------------------------------------------------------------------------------
+# Voice Functions
+#------------------------------------------------------------------------------
+def voiceNotification(str_txt):
+    speech_engn.say(str_txt)
+    speech_engn.runAndWait()
+
+def notifyName(name):
+    notification = ""
+    if name.lower() == "unkown":
+        notification = "Hi there, nice to meet you"
+    else:
+        notification = "Hi " + name
+    voiceNotification(notification)
+
+def notifyObject(obj):
+    notification = "Please be careful, there is a " + obj + " in front of you"
+    voiceNotification(obj)
+
+#------------------------------------------------------------------------------
+# Helper Functions
+#------------------------------------------------------------------------------
+# def facialRecongition():
+#     print ("Hi")
+
+# def filterOutput():
+#     print ("Hi")
 def isTherePerson(classes, scores, category_index):
     for index,value in enumerate(classes[0]):
         if scores[0,index] > min_score_thresh:
@@ -158,20 +191,6 @@ def getCoordination(boxes):
 
     result = np.array([ymin,ymax,xmin,xmax])
     print(Result)
-
-# def facialRecongition():
-#     print ("Hi")
-
-# def voiceNotification():
-#     print ("Hi")
-
-# def filterOutput():
-#     print ("Hi")
-
-
-#------------------------------------------------------------------------------
-# Helper Functions
-#------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     try:

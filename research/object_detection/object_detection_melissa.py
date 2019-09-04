@@ -126,7 +126,7 @@ def TensorFlowDetection():
                     image_np,
                     np.squeeze(boxes),
                     np.squeeze(classes).astype(np.int32),
-                    # np.squeeze(scores),
+                    np.squeeze(scores),
                     category_index,
                     use_normalized_coordinates=True,
                     line_thickness=8)
@@ -140,12 +140,12 @@ def TensorFlowDetection():
 
 def isTherePerson(classes, scores, category_index):
     for index,value in enumerate(classes[0]):
-    if scores[0,index] > min_score_thresh:
-        recongition_output_array = category_index.get(value)
-        for d in recongition_output_array:
-            if d['id'] == 0:
-                return True;
-    return False;
+        if scores[0,index] > min_score_thresh:
+            # example output: {'id': 1, 'name': 'person'}
+            out_dict = category_index.get(value)
+            if out_dict['id'] == 1:
+                return True
+    return False
 
 # def facialRecongition():
 #     print ("Hi")

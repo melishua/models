@@ -33,8 +33,10 @@ from os import path
 #------------------------------------------------------------------------------
 # Define the video stream
 cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)   # float
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) # float
 # Define score needed to accept the output
-min_score_thresh = 0.5
+min_score_thresh = 0.6
 
 #------------------------------------------------------------------------------
 # Detection Functions
@@ -120,6 +122,7 @@ def TensorFlowDetection():
                 if isTherePerson(classes, scores, category_index):
                     # Call second API for facial recongition
                     print("There is a person!");
+                    #getCoordination(boxes)
 
                 # Visualization of the results of a detection.
                 vis_util.visualize_boxes_and_labels_on_image_array(
@@ -147,6 +150,15 @@ def isTherePerson(classes, scores, category_index):
                 return True
     return False
 
+def getCoordination(boxes):
+    ymin = int((boxes[0][0][0]*height))
+    xmin = int((boxes[0][0][1]*width))
+    ymax = int((boxes[0][0][2]*height))
+    xmax = int((boxes[0][0][3]*width))
+
+    result = np.array([ymin,ymax,xmin,xmax])
+    print(Result)
+
 # def facialRecongition():
 #     print ("Hi")
 
@@ -155,6 +167,11 @@ def isTherePerson(classes, scores, category_index):
 
 # def filterOutput():
 #     print ("Hi")
+
+
+#------------------------------------------------------------------------------
+# Helper Functions
+#------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     try:

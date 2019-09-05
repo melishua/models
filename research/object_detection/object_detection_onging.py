@@ -164,22 +164,22 @@ def TensorFlowDetection():
                 	for o in class_names:
                 		notifyObject(o)
 
-                # # Visualization of the results of a detection.
-                # vis_util.visualize_boxes_and_labels_on_image_array(
-                #     image_np,
-                #     np.squeeze(boxes),
-                #     np.squeeze(classes).astype(np.int32),
-                #     np.squeeze(scores),
-                #     category_index,
-                #     use_normalized_coordinates=True,
-                #     line_thickness=8)
+                # Visualization of the results of a detection.
+                vis_util.visualize_boxes_and_labels_on_image_array(
+                    image_np,
+                    np.squeeze(boxes),
+                    np.squeeze(classes).astype(np.int32),
+                    np.squeeze(scores),
+                    category_index,
+                    use_normalized_coordinates=True,
+                    line_thickness=8)
 
                 # Display output
-                # cv2.imshow('object detection', image_np)
+                cv2.imshow('object detection', image_np)
                 
-                # if cv2.waitKey(25) & 0xFF == ord('q'):
-                #     cv2.destroyAllWindows()
-                #     break
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    cv2.destroyAllWindows()
+                    break
 
 
 # Function: facialRecongition
@@ -248,11 +248,15 @@ def notifyName(name):
         notification = "Hi there, nice to meet you"
     else:
         notification = "Hi " + name
-    voiceNotification(notification)
+    #voiceNotification(notification)
+    print("sleep for 1 second")
+    sleep(1)
 
 def notifyObject(obj):
     notification = "Please be careful, there is a " + obj + " in front of you"
-    voiceNotification(notification)
+    #voiceNotification(notification)
+    print("sleep for 1 second")
+    sleep(1)
 
 #------------------------------------------------------------------------------
 # Helper Functions

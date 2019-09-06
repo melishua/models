@@ -69,18 +69,24 @@ stella_face_encoding = face_recognition.face_encodings(stella_image)[0]
 steve_image = face_recognition.load_image_file("./face_recognition/known_ppl/Steve Mann.jpg")
 steve_face_encoding = face_recognition.face_encodings(steve_image)[0]
 
+# Load a fourth picture and learn how to recognize it.
+david_image = face_recognition.load_image_file("./face_recognition/known_ppl/David Shi.jpg")
+david_face_encoding = face_recognition.face_encodings(david_image)[0]
+
 # Create arrays of known face encodings and their names
 known_face_encodings = [
     angel_face_encoding,
     melissa_face_encoding,
     stella_face_encoding,
-    steve_face_encoding
+    steve_face_encoding,
+    david_face_encoding
 ]
 known_face_names = [
     "Angel Gao",
     "Melissa Pan",
     "Stella Tao",
-    "Steve Mann"
+    "Steve Mann",
+    "David Shi"
 ]
 
 # Initialize some variables
@@ -218,7 +224,7 @@ def facialRecongition(frame):
     for face_encoding in face_encodings:
         # See if the face is a match for the known face(s)
         matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
-        name = "Unknown Person"
+        name = "Unknown"
 
         if True in matches:
             # If a match was found in known_face_encodings, just use the first one.

@@ -43,6 +43,8 @@ width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)   # float
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) # float
 # Define score needed to accept the output
 tf_min_score_thresh = 0.5
+# Flag for showing video stream
+cv_show_image_flag = False # Keep false until cv2 crash is resolved
 
 # Initiate speech engine
 speech_engn = pyttsx3.init()
@@ -164,22 +166,24 @@ def TensorFlowDetection():
                 	for o in class_names:
                 		notifyObject(o)
 
-                # Visualization of the results of a detection.
-                vis_util.visualize_boxes_and_labels_on_image_array(
-                    image_np,
-                    np.squeeze(boxes),
-                    np.squeeze(classes).astype(np.int32),
-                    np.squeeze(scores),
-                    category_index,
-                    use_normalized_coordinates=True,
-                    line_thickness=8)
+                if cv_show_image_flag:
+                    # Visualization of the results of a detection.
+                    vis_util.visualize_boxes_and_labels_on_image_array(
+                        image_np,
+                        np.squeeze(boxes),
+                        np.squeeze(classes).astype(np.int32),
+                        np.squeeze(scores),
+                        category_index,
+                        use_normalized_coordinates=True,
+                        line_thickness=8)
 
-                # Display output
-                cv2.imshow('object detection', image_np)
-                
-                if cv2.waitKey(25) & 0xFF == ord('q'):
-                    cv2.destroyAllWindows()
-                    break
+                    # Display output
+                    cv2.imshow('object detection', image_np)
+                    
+                    if cv2.waitKey(25) & 0xFF == ord('q'):
+                        cv2.destroyAllWindows()
+                        break
+
 
 
 # Function: facialRecongition
@@ -218,22 +222,22 @@ def facialRecongition(frame):
         face_names.append(name)
         notifyName(name)
 
-    # Display the results
-    for (top, right, bottom, left), name in zip(face_locations, face_names):
-        # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-        top *= 4
-        right *= 4
-        bottom *= 4
-        left *= 4
+    if cv_show_image_flag:
+        # Display the results
+        for (top, right, bottom, left), name in zip(face_locations, face_names):
+            # Scale back up face locations since the frame we detected in was scaled to 1/4 size
+            top *= 4
+            right *= 4
+            bottom *= 4
+            left *= 4
 
-        # Draw a box around the face
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+            # Draw a box around the face
+            cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
-        # Draw a label with a name below the face
-        cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
-        font = cv2.FONT_HERSHEY_DUPLEX
-        cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-
+            # Draw a label with a name below the face
+            cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
+            font = cv2.FONT_HERSHEY_DUPLEX
+            cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
 #------------------------------------------------------------------------------
 # Voice Notification Functions
@@ -244,19 +248,15 @@ def voiceNotification(str_txt):
 
 def notifyName(name):
     notification = ""
-    if name.lower() == "unkown":
+    if name.lower() == "Unknown":
         notification = "Hi there, nice to meet you"
     else:
         notification = "Hi " + name
-    #voiceNotification(notification)
-    print("sleep for 1 second")
-    sleep(1)
+    voiceNotification(notification)
 
 def notifyObject(obj):
     notification = "Please be careful, there is a " + obj + " in front of you"
-    #voiceNotification(notification)
-    print("sleep for 1 second")
-    sleep(1)
+    voiceNotification(notification)
 
 #------------------------------------------------------------------------------
 # Helper Functions

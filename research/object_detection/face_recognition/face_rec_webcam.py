@@ -27,16 +27,22 @@ melissa_face_encoding = face_recognition.face_encodings(melissa_image)[0]
 stella_image = face_recognition.load_image_file("./known_ppl/Stella Tao.jpg")
 stella_face_encoding = face_recognition.face_encodings(stella_image)[0]
 
+# Load a fourth picture and learn how to recognize it.
+steve_image = face_recognition.load_image_file("./known_ppl/Steve Mann.jpg")
+steve_face_encoding = face_recognition.face_encodings(steve_image)[0]
+
 # Create arrays of known face encodings and their names
 known_face_encodings = [
     angel_face_encoding,
     melissa_face_encoding,
-    stella_face_encoding
+    stella_face_encoding,
+    steve_face_encoding
 ]
 known_face_names = [
     "Angel Gao",
     "Melissa Pan",
-    "Stella Tao"
+    "Stella Tao",
+    "Steve Mann"
 ]
 
 # Initiate speech engine

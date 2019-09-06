@@ -61,14 +61,26 @@ angel_face_encoding = face_recognition.face_encodings(angel_image)[0]
 melissa_image = face_recognition.load_image_file("./face_recognition/known_ppl/Melissa Pan.jpg")
 melissa_face_encoding = face_recognition.face_encodings(melissa_image)[0]
 
+# Load a third picture and learn how to recognize it.
+stella_image = face_recognition.load_image_file("./face_recognition/known_ppl/Stella Tao.jpg")
+stella_face_encoding = face_recognition.face_encodings(stella_image)[0]
+
+# Load a fourth picture and learn how to recognize it.
+steve_image = face_recognition.load_image_file("./face_recognition/known_ppl/Steve Mann.jpg")
+steve_face_encoding = face_recognition.face_encodings(steve_image)[0]
+
 # Create arrays of known face encodings and their names
 known_face_encodings = [
     angel_face_encoding,
-    melissa_face_encoding
+    melissa_face_encoding,
+    stella_face_encoding,
+    steve_face_encoding
 ]
 known_face_names = [
     "Angel Gao",
-    "Melissa Pan"
+    "Melissa Pan",
+    "Stella Tao",
+    "Steve Mann"
 ]
 
 # Initialize some variables
@@ -248,7 +260,7 @@ def voiceNotification(str_txt):
 
 def notifyName(name):
     notification = ""
-    if name.lower() == "Unknown":
+    if name == "Unknown":
         notification = "Hi there, nice to meet you"
     else:
         notification = "Hi " + name

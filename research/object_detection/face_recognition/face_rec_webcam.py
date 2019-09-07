@@ -26,6 +26,17 @@ import numpy as np
 import pyttsx3
 
 #------------------------------------------------------------------------------
+# Constants Declaration
+#------------------------------------------------------------------------------
+# Flag for showing video stream
+cv_show_image_flag = False # Keep false until cv2 crash is resolved
+# Flag for outputing audio notification
+# *TODO*: pyttsx3_output_audio is currently !(cv_show_image_flag) due to crash
+#         of program when both are enable. The value can be changed to whatever
+#         option once the bug is fixed!!!
+pyttsx3_output_audio = not cv_show_image_flag
+
+#------------------------------------------------------------------------------
 # Environment Setup
 #------------------------------------------------------------------------------
 # Camera source - Get a reference to webcam #0 (the default one)
@@ -112,7 +123,8 @@ def face_recognition_webcam():
                         name = known_face_names[best_match_index]
 
                 face_names.append(name)
-                notifyName(name)
+                if pyttsx3_output_audio:
+                    notifyName(name)
 
         process_this_frame = not process_this_frame
 
@@ -133,13 +145,13 @@ def face_recognition_webcam():
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
-        # Display the resulting image
-        #cv2.imshow('Video', frame)
-        # cv2.imshow('object detection', cv2.resize(frame, (800, 460)))
+        if cv_show_image_flag:
+            # Display the resulting image
+            cv2.imshow('Video', frame)
 
-        # # Hit 'q' on the keyboard to quit!
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     break
+            # Hit 'q' on the keyboard to quit!
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
     # Release handle to the webcam
     video_capture.release()

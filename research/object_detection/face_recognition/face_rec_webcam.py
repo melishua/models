@@ -24,17 +24,21 @@ import face_recognition
 import cv2
 import numpy as np
 import pyttsx3
+import os
+import re
+import glob
 
 #------------------------------------------------------------------------------
 # Constants Declaration
 #------------------------------------------------------------------------------
 # Flag for showing video stream
-cv_show_image_flag = False # Keep false until cv2 crash is resolved
+cv_show_image_flag = True # Keep false until cv2 crash is resolved
 # Flag for outputing audio notification
 # *TODO*: pyttsx3_output_audio is currently !(cv_show_image_flag) due to crash
 #         of program when both are enable. The value can be changed to whatever
 #         option once the bug is fixed!!!
 pyttsx3_output_audio = not cv_show_image_flag
+last_unknown_person = "Unknown"
 
 #------------------------------------------------------------------------------
 # Environment Setup
@@ -47,47 +51,68 @@ speech_engn = pyttsx3.init()
 notify_perct_thresh = 0.3
 
 #------------------------------------------------------------------------------
-# Load Face and annotation records
+# Function to load Face and annotation records
+#------------------------------------------------------------------------------
+known_face_encodings = []
+known_face_names = []
 
-# Load a sample picture and learn how to recognize it.
-angel_image = face_recognition.load_image_file("./known_ppl/Angel Gao.jpg")
-angel_face_encoding = face_recognition.face_encodings(angel_image)[0]
+def load_face_and_encoding(known_ppl_pics):
+    # Load a picture of each person and learn how to recognize it.
+    for known_person_pic in known_ppl_pics:
+        # get this person's name
+        image_name = os.path.basename(known_person_pic)
+        person_name = os.path.splitext(image_name)[0]
 
-# Load a second sample picture and learn how to recognize it.
-melissa_image = face_recognition.load_image_file("./known_ppl/Melissa Pan.jpg")
-melissa_face_encoding = face_recognition.face_encodings(melissa_image)[0]
+        # get this person's face encoding
+        image = face_recognition.load_image_file(known_person_pic)
+        face_encoding = face_recognition.face_encodings(image)[0]
 
-# Load a third picture and learn how to recognize it.
-stella_image = face_recognition.load_image_file("./known_ppl/Stella Tao.jpg")
-stella_face_encoding = face_recognition.face_encodings(stella_image)[0]
+        #TODO: save this person's name and face encoding in DB!
+        # save this person's name and face encoding
+        known_face_names.append(person_name)
+        known_face_encodings.append(face_encoding)
 
-# Load a fourth picture and learn how to recognize it.
-steve_image = face_recognition.load_image_file("./known_ppl/Steve Mann.jpg")
-steve_face_encoding = face_recognition.face_encodings(steve_image)[0]
+        print("I can recognize " + person_name + " now.")
 
-# Create arrays of known face encodings and their names
-known_face_encodings = [
-    angel_face_encoding,
-    melissa_face_encoding,
-    stella_face_encoding,
-    steve_face_encoding
-]
-known_face_names = [
-    "Angel Gao",
-    "Melissa Pan",
-    "Stella Tao",
-    "Steve Mann"
-]
+
+
+#------------------------------------------------------------------------------
+# Function to record an unknown person
+#------------------------------------------------------------------------------
+# def record_unknown_person(4_points):
+    #snap a photo of this person
+
+    #TODO: save picture in DB!
+    #save it locally
+
+    #assign a name to his/her - e.g. Unknown_1
+    #set last_unknown_person to this person
+    #load_face_and_encoding()
+
+    #TODO: save encoding in DB!
+    #save his/her face encoding
+
+
+
+
 
 #------------------------------------------------------------------------------
 # Face Recongition Function
 #------------------------------------------------------------------------------
 def face_recognition_webcam():
+    # TODO: check if database is empty
+    # if yes, load Face and annotation records from database and save them
+    # if no, then do not need to record these people again
+        # load pictures of known people from known_ppl_path
+    known_ppl_pics = glob.glob("./known_ppl/*.jpg")
+    load_face_and_encoding(known_ppl_pics)
+
     # Initialize some variables
     face_locations = []
     face_encodings = []
     face_names = []
     process_this_frame = True
+    staring_counter = 0
 
     while True:
         # Grab a single frame of video
@@ -121,6 +146,25 @@ def face_recognition_webcam():
                     best_match_index = np.argmin(face_distances)
                     if matches[best_match_index] and face_distances[best_match_index] < 0.5:
                         name = known_face_names[best_match_index]
+                        #TODO:
+                        # count the number of times this unknown person is seen consecutively
+                        # if name == last_unknown_person:
+                            # increment staring_counter for this particular unknown person
+                            # if staring_counter > 35:
+                                #print("Would you like to add this person as a contact? (y/n)")
+                                # take in response
+                                #print("Name: ")
+                                # take in response
+                                # update jpg name, person name (and in DB)
+
+                else:
+                    #TODO:
+                    # Since we are now looking at another unknown person
+                    staring_counter = 0
+                    #record_unknown_person(face_locations)
+                    #set last_unknown_person to this person
+                    #increment staring_counter for this particular unknown person
+
 
                 face_names.append(name)
                 if pyttsx3_output_audio:
@@ -172,6 +216,7 @@ def notifyName(name):
     else:
         notification = "Hi " + name
     voiceNotification(notification)
+
 
 if __name__ == "__main__":
     try:

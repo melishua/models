@@ -1,19 +1,42 @@
+###############################################################################
+#                                                                             #  
+#                  Object Detection Source Code For ISee                      #
+#                                                                             #  
+#-----------------------------------------------------------------------------#
+# This is a demo of running face recognition on live video from your webcam.  #
+# It's a little more complicated than the other example, but it includes some #
+# basic performance tweaks to make things run a lot faster:                   #
+#   1. Process each video frame at 1/4 resolution (though still display it at #
+#      full resolution)                                                       #
+#   2. Only detect faces in every other frame of video.                       #
+#                                                                             #
+# NOTE: This example requires OpenCV (the `cv2` library) to be installed only #
+# to read from your webcam. OpenCV is NOT required to use the face_recognition#
+# library. It's only required if you want to run this specific demo. If you   #
+# have trouble installing it, try any of the other demos that don't require it#
+# instead.                                                                    #
+###############################################################################
+
+#------------------------------------------------------------------------------
+# Libraries Import
+#------------------------------------------------------------------------------
 import face_recognition
 import cv2
 import numpy as np
 import pyttsx3
 
-# This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
-# other example, but it includes some basic performance tweaks to make things run a lot faster:
-#   1. Process each video frame at 1/4 resolution (though still display it at full resolution)
-#   2. Only detect faces in every other frame of video.
-
-# PLEASE NOTE: This example requires OpenCV (the `cv2` library) to be installed only to read from your webcam.
-# OpenCV is *not* required to use the face_recognition library. It's only required if you want to run this
-# specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
-
-# Get a reference to webcam #0 (the default one)
+#------------------------------------------------------------------------------
+# Environment Setup
+#------------------------------------------------------------------------------
+# Camera source - Get a reference to webcam #0 (the default one)
 video_capture = cv2.VideoCapture(0)
+
+# Audio source - Initiate speech engine
+speech_engn = pyttsx3.init()
+notify_perct_thresh = 0.3
+
+#------------------------------------------------------------------------------
+# Load Face and annotation records
 
 # Load a sample picture and learn how to recognize it.
 angel_image = face_recognition.load_image_file("./known_ppl/Angel Gao.jpg")
@@ -45,10 +68,9 @@ known_face_names = [
     "Steve Mann"
 ]
 
-# Initiate speech engine
-speech_engn = pyttsx3.init()
-notify_perct_thresh = 0.3
-
+#------------------------------------------------------------------------------
+# Face Recongition Function
+#------------------------------------------------------------------------------
 def face_recognition_webcam():
     # Initialize some variables
     face_locations = []

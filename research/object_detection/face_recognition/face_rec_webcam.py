@@ -3,6 +3,8 @@
 #                  Object Detection Source Code For ISee                      #
 #                                                                             #  
 #-----------------------------------------------------------------------------#
+#                                                                             #  
+# Description:                                                                #  
 # This is a demo of running face recognition on live video from your webcam.  #
 # It's a little more complicated than the other example, but it includes some #
 # basic performance tweaks to make things run a lot faster:                   #
@@ -20,25 +22,29 @@
 #------------------------------------------------------------------------------
 # Libraries Import
 #------------------------------------------------------------------------------
-import face_recognition
-import cv2
 import numpy as np
+import cv2
+import face_recognition
 import pyttsx3
 import os
 import re
 import glob
 
 #------------------------------------------------------------------------------
-# Constants Declaration
+# Constants / Global Declaration
 #------------------------------------------------------------------------------
 # Flag for showing video stream
 cv_show_image_flag = True # Keep false until cv2 crash is resolved
 # Flag for outputing audio notification
-# *TODO*: pyttsx3_output_audio is currently !(cv_show_image_flag) due to crash
-#         of program when both are enable. The value can be changed to whatever
-#         option once the bug is fixed!!!
+# *TODO*: 
+#   The problem crush currently when both video and audio output is enable!!!!
+#   So pyttsx3_output_audio is set to !(cv_show_image_flag) for now. The value
+#   can be change to specific value when the bug is fixed.
 pyttsx3_output_audio = not cv_show_image_flag
 last_unknown_person = "Unknown"
+
+# Default path for adding new annotation file
+ANNOTATION_PATH = "./known_annotation"
 
 #------------------------------------------------------------------------------
 # Environment Setup
@@ -93,9 +99,6 @@ def load_face_and_encoding(known_ppl_pics):
     #save his/her face encoding
 
 
-
-
-
 #------------------------------------------------------------------------------
 # Face Recongition Function
 #------------------------------------------------------------------------------
@@ -121,9 +124,12 @@ def face_recognition_webcam():
         # Resize frame of video to 1/4 size for faster face recognition processing
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
-        # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
+        # Convert the image from BGR color (which OpenCV uses) to RGB color 
+        # (which face_recognition uses)
         rgb_small_frame = small_frame[:, :, ::-1]
 
+        # Mainline Recongition
+        #------------------------------------------------------------------------------
         # Only process every other frame of video to save time
         if process_this_frame:
             # Find all the faces and face encodings in the current frame of video
@@ -167,29 +173,31 @@ def face_recognition_webcam():
 
 
                 face_names.append(name)
-                if pyttsx3_output_audio:
-                    notifyName(name)
 
-        process_this_frame = not process_this_frame
+                # Audio Notfication
+                if pyttsx3_output_audio:
+                    notifyNameAndInfo(name, best_match_index)
+
+                # Feature to add new person or annotation
 
 
         # Display the results
-        for (top, right, bottom, left), name in zip(face_locations, face_names):
-            # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-            top *= 4
-            right *= 4
-            bottom *= 4
-            left *= 4
-
-            # Draw a box around the face
-            cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-
-            # Draw a label with a name below the face
-            cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
-            font = cv2.FONT_HERSHEY_DUPLEX
-            cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-
         if cv_show_image_flag:
+            for (top, right, bottom, left), name in zip(face_locations, face_names):
+                # Scale back up face locations since the frame we detected in was scaled to 1/4 size
+                top *= 4
+                right *= 4
+                bottom *= 4
+                left *= 4
+
+                # Draw a box around the face
+                cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+
+                # Draw a label with a name below the face
+                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
+                font = cv2.FONT_HERSHEY_DUPLEX
+                cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+        
             # Display the resulting image
             cv2.imshow('Video', frame)
 
@@ -197,10 +205,8 @@ def face_recognition_webcam():
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-    # Release handle to the webcam
-    video_capture.release()
-    cv2.destroyAllWindows()
-
+        # Update frame control knob
+        process_this_frame = not process_this_frame
 
 #------------------------------------------------------------------------------
 # Voice Notification Functions
@@ -209,17 +215,97 @@ def voiceNotification(str_txt):
     speech_engn.say(str_txt)
     speech_engn.runAndWait()
 
-def notifyName(name):
+def notifyNameAndInfo(name, id):
     notification = ""
+    annotations = []
+
+    # Format notification message
     if name == "Unknown":
         notification = "Hi there, nice to meet you"
     else:
         notification = "Hi " + name
+        annotations = readAnnotationFromId(id)
+
+    # Notify name
     voiceNotification(notification)
 
+    # Notify annotations
+    for a in annotations:
+        voiceNotification(a)
 
+#------------------------------------------------------------------------------
+# Annotation Related Functions
+#------------------------------------------------------------------------------
+def readAnnotationFromId(id):
+    # Get matching annotation file from database
+    af, found = getAnnotationByFRId(id)
+
+    if not found:
+        return []
+
+    # Read Annotation File
+    f = open(af, "r")
+
+    annotations = f.readlines()
+
+    # close the file after reading the lines.
+    f.close()
+
+    return annotations
+
+def annotateById(id, annotation):
+    # Get matching annotation file from database
+    # af, found = 
+
+    f = open(af, "a+")
+
+    # Create new file if annotation not found
+    if not found:
+        af = ANNOTATION_PATH + name + ".txt"
+        f = open(af, "w+") 
+
+    # Append new annotation line by line
+    for a in annotation:
+        f.write(a + '\n')
+
+    # close the file after writing the lines.
+    f.close()
+
+#------------------------------------------------------------------------------
+# Add New Faces Functions
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+# Database functions
+#------------------------------------------------------------------------------
+
+def getAnnotationByFRId(id):
+    # hardcode for now 
+    return (ANNOTATION_PATH + "/"+ str(id) + ".txt", True)
+
+# def updateAnnotationByFR(name,path):
+# def idToName(id):
+# def nameToId(name):
+
+
+#------------------------------------------------------------------------------
+# Cleanup Functions
+#------------------------------------------------------------------------------
+def generalCleanup():
+    # Turn off audio source
+    speech_engn.stop()
+    # Release handle to the webcam
+    video_capture.release()
+    cv2.destroyAllWindows()
+
+#------------------------------------------------------------------------------
+# Run Program
+#------------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         face_recognition_webcam()
+        generalCleanup()
+
     except Exception as e:
         raise e

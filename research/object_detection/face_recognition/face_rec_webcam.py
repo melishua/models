@@ -41,10 +41,12 @@ cv_show_image_flag = True # Keep false until cv2 crash is resolved
 #   So pyttsx3_output_audio is set to !(cv_show_image_flag) for now. The value
 #   can be change to specific value when the bug is fixed.
 pyttsx3_output_audio = not cv_show_image_flag
-last_unknown_person = "Unknown"
 
 # Default path for adding new annotation file
 ANNOTATION_PATH = "./known_annotation"
+last_unknown_person = "Unknown"
+unknown_person_idx = 1
+staring_counter = 0
 
 #------------------------------------------------------------------------------
 # Environment Setup
@@ -85,18 +87,27 @@ def load_face_and_encoding(known_ppl_pics):
 #------------------------------------------------------------------------------
 # Function to record an unknown person
 #------------------------------------------------------------------------------
-# def record_unknown_person(4_points):
-    #snap a photo of this person
+def record_unknown_person(face_encoding):
+    global unknown_person_idx
+    global last_unknown_person
+    global known_face_encodings
+    global known_face_names
 
-    #TODO: save picture in DB!
-    #save it locally
+    #assign a name to his/her
+    person_name = "Unknown_" + str(unknown_person_idx)
 
-    #assign a name to his/her - e.g. Unknown_1
     #set last_unknown_person to this person
-    #load_face_and_encoding()
+    last_unknown_person = person_name
 
     #TODO: save encoding in DB!
     #save his/her face encoding
+    known_face_names.append(person_name)
+    known_face_encodings.append(face_encoding)
+
+    print("I can recognize " + person_name + " now.")    
+
+    #increment unknown_person_idx
+    unknown_person_idx += 1
 
 
 #------------------------------------------------------------------------------
@@ -115,7 +126,9 @@ def face_recognition_webcam():
     face_encodings = []
     face_names = []
     process_this_frame = True
-    staring_counter = 0
+    global staring_counter
+    global known_face_names
+    global known_face_encodings
 
     while True:
         # Grab a single frame of video
@@ -152,25 +165,51 @@ def face_recognition_webcam():
                     best_match_index = np.argmin(face_distances)
                     if matches[best_match_index] and face_distances[best_match_index] < 0.5:
                         name = known_face_names[best_match_index]
-                        #TODO:
+
                         # count the number of times this unknown person is seen consecutively
-                        # if name == last_unknown_person:
+                        if name == last_unknown_person:
                             # increment staring_counter for this particular unknown person
-                            # if staring_counter > 35:
-                                #print("Would you like to add this person as a contact? (y/n)")
-                                # take in response
-                                #print("Name: ")
-                                # take in response
-                                # update jpg name, person name (and in DB)
+                            staring_counter += 1
+                            print("staring_counter is: " + str(staring_counter))
 
-                else:
-                    #TODO:
-                    # Since we are now looking at another unknown person
-                    staring_counter = 0
-                    #record_unknown_person(face_locations)
-                    #set last_unknown_person to this person
-                    #increment staring_counter for this particular unknown person
+                            # if you continue to stare at this unknown person
+                            # i.e. might be having a conversation with
+                            # prompt to add this person as a contact
+                            if staring_counter > 30:
+                                # it seems like unknown_1 is not added to 
+                                text = input("Would you like to add this person as a contact? (y/n)")
+                                if text == "y" or text == "Y":
+                                    name_of_unknown_person = input("Name: ")
 
+                                    # update person name
+                                    # TODO: update in DB!
+                                    for idx, known_face_name in enumerate(known_face_names):
+                                        if last_unknown_person in known_face_name:
+                                            print("Update " + known_face_name + " to " + name_of_unknown_person)
+                                            known_face_names[idx] = name_of_unknown_person
+
+                                            print("Here is the updated contact list:")
+                                    print(known_face_names)
+
+                                    # restart counting since we already added this person
+                                    # TODO: more handling should go in to this
+                                    staring_counter = 0
+
+                                else:
+                                    # restart counting since we didn't want to add this person
+                                    # TODO: more handling should go in to this
+                                    staring_counter = 0
+                                    print("No person is added to your contact.")
+
+                    else:
+                        #TODO: we should associate staring counter with each unknown person in DB
+                        # Since we are now looking at another unknown person, restart counting
+                        staring_counter = 0
+                        record_unknown_person(face_encoding)
+                        #increment staring_counter for this particular unknown person
+                        staring_counter += 1
+                        print("recognized new unknown person: " + last_unknown_person)
+                        print("staring_counter is: " + str(staring_counter))
 
                 face_names.append(name)
 

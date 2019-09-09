@@ -36,20 +36,22 @@ from os import path
 # Constants / Global Declaration
 #------------------------------------------------------------------------------
 # Flag for showing video stream
-cv_show_image_flag = False # Keep false until cv2 crash is resolved
+CV_SHOW_IMAGE_FLAG = False # Keep false until cv2 crash is resolved
 # Flag for outputing audio notification
 # *TODO*: 
 #   The problem crush currently when both video and audio output is enable!!!!
-#   So pyttsx3_output_audio is set to !(cv_show_image_flag) for now. The value
+#   So PYTTSX3_OUTPUT_AUDIO is set to !(CV_SHOW_IMAGE_FLAG) for now. The value
 #   can be change to specific value when the bug is fixed.
-pyttsx3_output_audio = not cv_show_image_flag
+PYTTSX3_OUTPUT_AUDIO = not CV_SHOW_IMAGE_FLAG
 
 # Default path for adding new annotation file
 ANNOTATION_PATH = "./known_annotation"
-last_unknown_person = "Unknown"
-unknown_person_idx = 1
-staring_counter = 0
-staring_threshold = 2
+LAST_UNKNOWN_PERSON = "Unknown"
+UNKNOWN_PERSON_IDX = 1
+STARING_COUNTER = 0
+STARING_THRESHOLD = 2
+KNOWN_FACE_ENCODINGS = []
+KNOWN_FACE_NAMES = []
 
 #------------------------------------------------------------------------------
 # Environment Setup
@@ -67,10 +69,7 @@ speech_recognizer = sr.Recognizer()
 #------------------------------------------------------------------------------
 # Function to load Face and annotation records
 #------------------------------------------------------------------------------
-known_face_encodings = []
-known_face_names = []
-
-def load_face_and_encoding(known_ppl_pics):
+def LoadFaceAndEncoding(known_ppl_pics):
     # Load a picture of each person and learn how to recognize it.
     for known_person_pic in known_ppl_pics:
         # get this person's name
@@ -83,8 +82,8 @@ def load_face_and_encoding(known_ppl_pics):
         
         #TODO: save this person's name and face encoding in DB!
         # save this person's name and face encoding
-        known_face_names.append(person_name)
-        known_face_encodings.append(face_encoding)
+        KNOWN_FACE_NAMES.append(person_name)
+        KNOWN_FACE_ENCODINGS.append(face_encoding)
 
         print("I can recognize " + person_name + " now.")
 
@@ -93,32 +92,32 @@ def load_face_and_encoding(known_ppl_pics):
 #------------------------------------------------------------------------------
 # Function to record an unknown person
 #------------------------------------------------------------------------------
-def record_unknown_person(face_encoding):
-    global unknown_person_idx
-    global last_unknown_person
-    global known_face_encodings
-    global known_face_names
+def RecordUnknownPerson(face_encoding):
+    global UNKNOWN_PERSON_IDX
+    global LAST_UNKNOWN_PERSON
+    global KNOWN_FACE_ENCODINGS
+    global KNOWN_FACE_NAMES
 
     #assign a name to his/her
-    person_name = "Unknown_" + str(unknown_person_idx)
+    person_name = "Unknown_" + str(UNKNOWN_PERSON_IDX)
 
-    #set last_unknown_person to this person
-    last_unknown_person = person_name
+    #set LAST_UNKNOWN_PERSON to this person
+    LAST_UNKNOWN_PERSON = person_name
 
     #TODO: save encoding in DB!
     #save his/her face encoding
-    known_face_names.append(person_name)
-    known_face_encodings.append(face_encoding)
+    KNOWN_FACE_NAMES.append(person_name)
+    KNOWN_FACE_ENCODINGS.append(face_encoding)
 
     print("I can recognize " + person_name + " now.")    
 
-    #increment unknown_person_idx
-    unknown_person_idx += 1
+    #increment UNKNOWN_PERSON_IDX
+    UNKNOWN_PERSON_IDX += 1
 
-def add_unknown_person_as_a_contact():
-    global last_unknown_person
-    global known_face_names
-    global staring_counter
+def AddUnknownAsContact():
+    global LAST_UNKNOWN_PERSON
+    global KNOWN_FACE_NAMES
+    global STARING_COUNTER
 
     contact_request = "Would you like to add this person as a contact?"
     answer = getTextFromAudio(contact_request)
@@ -128,47 +127,47 @@ def add_unknown_person_as_a_contact():
 
         # update person name
         # TODO: update in DB!
-        for idx, known_face_name in enumerate(known_face_names):
-            if last_unknown_person in known_face_name:
+        for idx, known_face_name in enumerate(KNOWN_FACE_NAMES):
+            if LAST_UNKNOWN_PERSON in known_face_name:
                 print("Update " + known_face_name + " to " + name_of_unknown_person)
-                known_face_names[idx] = name_of_unknown_person
+                KNOWN_FACE_NAMES[idx] = name_of_unknown_person
 
                 # confirm updated contact
                 contact_added = getTextFromAudio(name_of_unknown_person + "is added to your contact list.")
                 print("Here is the updated contact list:")
 
-        print(known_face_names)
+        print(KNOWN_FACE_NAMES)
 
         # restart counting since we already added this person
         # TODO: more handling should go in to this
-        staring_counter = 0
+        STARING_COUNTER = 0
 
     else:
         # restart counting since we didn't want to add this person
         # TODO: more handling should go in to this
-        staring_counter = 0
+        STARING_COUNTER = 0
         print("No person is added to your contact.")
 
 #------------------------------------------------------------------------------
 # Face Recongition Function
 #------------------------------------------------------------------------------
-def face_recognition_webcam():
+def FaceRecognitionWebcam():
     # TODO: check if database is empty
     # if yes, load Face and annotation records from database and save them
     # if no, then do not need to record these people again
         # load pictures of known people from known_ppl_path
     known_ppl_pics = glob.glob("./known_ppl/*.jpg")
-    load_face_and_encoding(known_ppl_pics)
+    LoadFaceAndEncoding(known_ppl_pics)
 
     # Initialize some variables
     face_locations = []
     face_encodings = []
     face_names = []
     process_this_frame = True
-    global staring_counter
-    global staring_threshold
-    global known_face_names
-    global known_face_encodings
+    global STARING_COUNTER
+    global STARING_THRESHOLD
+    global KNOWN_FACE_NAMES
+    global KNOWN_FACE_ENCODINGS
 
     while True:
         # Grab a single frame of video
@@ -192,53 +191,54 @@ def face_recognition_webcam():
             face_names = []
             for face_encoding in face_encodings:
                 # See if the face is a match for the known face(s)
-                matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+                matches = face_recognition.compare_faces(KNOWN_FACE_ENCODINGS, face_encoding)
                 name = "Unknown"
 
                 if True in matches:
-                    # If a match was found in known_face_encodings, just use the first one.
+                    # If a match was found in KNOWN_FACE_ENCODINGS, just use the first one.
                     # first_match_index = matches.index(True)
-                    # name = known_face_names[first_match_index]
+                    # name = KNOWN_FACE_NAMES[first_match_index]
 
                     # Or instead, use the known face with the smallest distance to the new face
-                    face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
+                    face_distances = face_recognition.face_distance(KNOWN_FACE_ENCODINGS, face_encoding)
                     best_match_index = np.argmin(face_distances)
                     if matches[best_match_index] and face_distances[best_match_index] < 0.5:
-                        name = known_face_names[best_match_index]
+                        name = KNOWN_FACE_NAMES[best_match_index]
 
                         # count the number of times this unknown person is seen consecutively
-                        if name == last_unknown_person:
-                            # increment staring_counter for this particular unknown person
-                            staring_counter += 1
-                            print("staring_counter is: " + str(staring_counter))
+                        if name == LAST_UNKNOWN_PERSON:
+                            # increment STARING_COUNTER for this particular unknown person
+                            STARING_COUNTER += 1
+                            print("STARING_COUNTER is: " + str(STARING_COUNTER))
 
                             # if you continue to stare at this unknown person
                             # i.e. might be having a conversation with
                             # prompt to add this person as a contact
-                            if staring_counter > staring_threshold:
-                                add_unknown_person_as_a_contact()
+                            if STARING_COUNTER > STARING_THRESHOLD:
+                                AddUnknownAsContact()
 
                     else:
                         #TODO: we should associate staring counter with each unknown person in DB
                         # Since we are now looking at another unknown person, restart counting
-                        staring_counter = 0
-                        record_unknown_person(face_encoding)
-                        #increment staring_counter for this particular unknown person
-                        staring_counter += 1
-                        print("recognized new unknown person: " + last_unknown_person)
-                        print("staring_counter is: " + str(staring_counter))
+                        STARING_COUNTER = 0
+                        RecordUnknownPerson(face_encoding)
+                        #increment STARING_COUNTER for this particular unknown person
+                        STARING_COUNTER += 1
+                        print("recognized new unknown person: " + LAST_UNKNOWN_PERSON)
+                        print("STARING_COUNTER is: " + str(STARING_COUNTER))
 
                 face_names.append(name)
 
                 # Audio Notfication
-                if pyttsx3_output_audio:
+                # TODO: set up a timer for voice notification so we don't keep repeat ourselves
+                if PYTTSX3_OUTPUT_AUDIO:
                     notifyNameAndInfo(name, best_match_index)
 
                 # Feature to add new person or annotation
 
 
         # Display the results
-        if cv_show_image_flag:
+        if CV_SHOW_IMAGE_FLAG:
             for (top, right, bottom, left), name in zip(face_locations, face_names):
                 # Scale back up face locations since the frame we detected in was scaled to 1/4 size
                 top *= 4
@@ -267,7 +267,7 @@ def face_recognition_webcam():
 #------------------------------------------------------------------------------
 # Voice Notification Functions
 #------------------------------------------------------------------------------
-def voiceNotification(str_txt):
+def VoiceNotification(str_txt):
     speech_engn.say(str_txt)
     speech_engn.runAndWait()
 
@@ -283,18 +283,18 @@ def notifyNameAndInfo(name, id):
         annotations = readAnnotationFromId(id)
 
     # Notify name
-    voiceNotification(notification)
+    VoiceNotification(notification)
 
     # Notify annotations
     for a in annotations:
-        voiceNotification(a)
+        VoiceNotification(a)
 
 #------------------------------------------------------------------------------
 # Speech Recognition Functions
 #------------------------------------------------------------------------------
 def getTextFromAudio(indicator):
     with sr.Microphone() as source:
-        voiceNotification(indicator)
+        VoiceNotification(indicator)
         audio = speech_recognizer.listen(source)
 
     # recognize speech using Google Speech Recognition
@@ -387,7 +387,7 @@ def generalCleanup():
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        face_recognition_webcam()
+        FaceRecognitionWebcam()
         generalCleanup()
 
     except Exception as e:

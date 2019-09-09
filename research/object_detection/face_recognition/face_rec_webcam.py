@@ -29,12 +29,14 @@ import pyttsx3
 import os
 import re
 import glob
+import speech_recognition as sr
+from os import path
 
 #------------------------------------------------------------------------------
 # Constants / Global Declaration
 #------------------------------------------------------------------------------
 # Flag for showing video stream
-cv_show_image_flag = True # Keep false until cv2 crash is resolved
+cv_show_image_flag = False # Keep false until cv2 crash is resolved
 # Flag for outputing audio notification
 # *TODO*: 
 #   The problem crush currently when both video and audio output is enable!!!!
@@ -47,6 +49,7 @@ ANNOTATION_PATH = "./known_annotation"
 last_unknown_person = "Unknown"
 unknown_person_idx = 1
 staring_counter = 0
+staring_threshold = 2
 
 #------------------------------------------------------------------------------
 # Environment Setup
@@ -57,6 +60,9 @@ video_capture = cv2.VideoCapture(0)
 # Audio source - Initiate speech engine
 speech_engn = pyttsx3.init()
 notify_perct_thresh = 0.3
+
+# speech recognition by obtaining audio from the microphone
+speech_recognizer = sr.Recognizer()
 
 #------------------------------------------------------------------------------
 # Function to load Face and annotation records
@@ -109,6 +115,37 @@ def record_unknown_person(face_encoding):
     #increment unknown_person_idx
     unknown_person_idx += 1
 
+def add_unknown_person_as_a_contact():
+    global last_unknown_person
+    global known_face_names
+    global staring_counter
+
+    contact_request = "Would you like to add this person as a contact?"
+    answer = getTextFromAudio(contact_request)
+    if "yes" in answer:
+        name_request = "What is his or her name?"
+        name_of_unknown_person = getTextFromAudio(name_request)
+
+        # update person name
+        # TODO: update in DB!
+        for idx, known_face_name in enumerate(known_face_names):
+            if last_unknown_person in known_face_name:
+                print("Update " + known_face_name + " to " + name_of_unknown_person)
+                known_face_names[idx] = name_of_unknown_person
+
+                print("Here is the updated contact list:")
+
+        print(known_face_names)
+
+        # restart counting since we already added this person
+        # TODO: more handling should go in to this
+        staring_counter = 0
+
+    else:
+        # restart counting since we didn't want to add this person
+        # TODO: more handling should go in to this
+        staring_counter = 0
+        print("No person is added to your contact.")
 
 #------------------------------------------------------------------------------
 # Face Recongition Function
@@ -127,6 +164,7 @@ def face_recognition_webcam():
     face_names = []
     process_this_frame = True
     global staring_counter
+    global staring_threshold
     global known_face_names
     global known_face_encodings
 
@@ -175,31 +213,8 @@ def face_recognition_webcam():
                             # if you continue to stare at this unknown person
                             # i.e. might be having a conversation with
                             # prompt to add this person as a contact
-                            if staring_counter > 30:
-                                # it seems like unknown_1 is not added to 
-                                text = input("Would you like to add this person as a contact? (y/n)")
-                                if text == "y" or text == "Y":
-                                    name_of_unknown_person = input("Name: ")
-
-                                    # update person name
-                                    # TODO: update in DB!
-                                    for idx, known_face_name in enumerate(known_face_names):
-                                        if last_unknown_person in known_face_name:
-                                            print("Update " + known_face_name + " to " + name_of_unknown_person)
-                                            known_face_names[idx] = name_of_unknown_person
-
-                                            print("Here is the updated contact list:")
-                                    print(known_face_names)
-
-                                    # restart counting since we already added this person
-                                    # TODO: more handling should go in to this
-                                    staring_counter = 0
-
-                                else:
-                                    # restart counting since we didn't want to add this person
-                                    # TODO: more handling should go in to this
-                                    staring_counter = 0
-                                    print("No person is added to your contact.")
+                            if staring_counter > staring_threshold:
+                                add_unknown_person_as_a_contact()
 
                     else:
                         #TODO: we should associate staring counter with each unknown person in DB
@@ -259,7 +274,7 @@ def notifyNameAndInfo(name, id):
     annotations = []
 
     # Format notification message
-    if name == "Unknown":
+    if "Unknown" in name:
         notification = "Hi there, nice to meet you"
     else:
         notification = "Hi " + name
@@ -273,13 +288,36 @@ def notifyNameAndInfo(name, id):
         voiceNotification(a)
 
 #------------------------------------------------------------------------------
+# Speech Recognition Functions
+#------------------------------------------------------------------------------
+def getTextFromAudio(indicator):
+    with sr.Microphone() as source:
+        voiceNotification(indicator)
+        audio = speech_recognizer.listen(source)
+
+    # recognize speech using Google Speech Recognition
+    try:
+        # for testing purposes, we're just using the default API key
+        # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
+        # instead of `r.recognize_google(audio)`
+        text = speech_recognizer.recognize_google(audio)
+        print("Google Speech Recognition thinks you said " + text)
+        return text
+    except sr.UnknownValueError:
+        print("Google Speech Recognition could not understand audio")
+    except sr.RequestError as e:
+        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+
+
+
+#------------------------------------------------------------------------------
 # Annotation Related Functions
 #------------------------------------------------------------------------------
 def readAnnotationFromId(id):
     # Get matching annotation file from database
     af, found = getAnnotationByFRId(id)
 
-    if not found:
+    if found == False:
         return []
 
     # Read Annotation File
@@ -321,7 +359,11 @@ def annotateById(id, annotation):
 
 def getAnnotationByFRId(id):
     # hardcode for now 
-    return (ANNOTATION_PATH + "/"+ str(id) + ".txt", True)
+    personal_annotation = ANNOTATION_PATH + "/"+ str(id) + ".txt"
+    if os.path.exists(personal_annotation) == True:
+        return (personal_annotation, True)
+    else:
+        return ('No such file', False)
 
 # def updateAnnotationByFR(name,path):
 # def idToName(id):

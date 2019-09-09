@@ -89,7 +89,7 @@ def load_face_and_encoding(known_ppl_pics):
         # get this person's face encoding
         image = face_recognition.load_image_file(known_person_pic)
         face_encoding = face_recognition.face_encodings(image)[0]
-
+        
         #TODO: save this person's name and face encoding in DB!
         # save this person's name and face encoding
         known_face_names.append(person_name)
@@ -140,6 +140,8 @@ def add_unknown_person_as_a_contact():
                 print("Update " + known_face_name + " to " + name_of_unknown_person)
                 known_face_names[idx] = name_of_unknown_person
 
+                # confirm updated contact
+                contact_added = getTextFromAudio(name_of_unknown_person + "is added to your contact list.")
                 print("Here is the updated contact list:")
 
         print(known_face_names)
@@ -287,9 +289,9 @@ def notifyNameAndInfo(id, name):
 
     # Format notification message
     if "Unknown" in name:
-        notification = "Hi there, nice to meet you"
+        notification = "There is an unknown person in front you."
     else:
-        notification = "Hi " + name
+        notification = "This is " + name
         annotations = readAnnotationFromId(id)
 
     # Notify name

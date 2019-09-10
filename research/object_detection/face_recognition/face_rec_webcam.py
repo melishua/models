@@ -87,7 +87,9 @@ def LoadFaceAndEncoding(known_ppl_pics):
 
         print("I can recognize " + person_name + " now.")
 
-
+def SetupSpeechEngine():
+    rate = speech_engn.getProperty('rate')
+    speech_engn.setProperty('rate', rate * 1.2)
 
 #------------------------------------------------------------------------------
 # Function to record an unknown person
@@ -230,12 +232,15 @@ def FaceRecognitionWebcam():
                 face_names.append(name)
 
                 # Audio Notfication
-                # TODO: set up a timer for voice notification so we don't keep repeat ourselves
+                # TODO: set up a timer for voice notification so we don't keep repeating ourselves
                 if PYTTSX3_OUTPUT_AUDIO:
                     NotifyNameAndInfo(name, best_match_index)
 
                 # Feature to add new person or annotation
+                if "unknown" not in name.lower():
+                    OptionForNewAnnotation(best_match_index, name)
 
+                    # TODO: option to pull out all of this person's pictures
 
         # Display the results
         if CV_SHOW_IMAGE_FLAG:
@@ -295,7 +300,7 @@ def NotifyNameAndInfo(name, id):
 def GetTextFromAudio(indicator):
     with sr.Microphone() as source:
         VoiceNotification(indicator)
-        audio = speech_recognizer.listen(source)
+        audio = speech_recognizer.listen(source,phrase_time_limit=10)
 
     # recognize speech using Google Speech Recognition
     try:
@@ -309,8 +314,10 @@ def GetTextFromAudio(indicator):
         print("Google Speech Recognition could not understand audio")
     except sr.RequestError as e:
         print("Could not request results from Google Speech Recognition service; {0}".format(e))
-
-
+        pass
+    except Exception as e:
+        print("Other speech recongition error: {0}".format(e))
+        raise
 
 #------------------------------------------------------------------------------
 # Annotation Related Functions
@@ -334,26 +341,52 @@ def ReadAnnotationFromId(id):
 
 def AnnotateById(id, annotation):
     # Get matching annotation file from database
-    # af, found = 
+    af, found = GetAnnotationByFRId(id)
 
-    f = open(af, "a+")
+    try:
+        f = open(af, "a+")
 
-    # Create new file if annotation not found
-    if not found:
-        af = ANNOTATION_PATH + name + ".txt"
-        f = open(af, "w+") 
+        # Create new file if annotation not found
+        if not found:
+            af = ANNOTATION_PATH + name + ".txt"
+            f = open(af, "w+") 
 
-    # Append new annotation line by line
-    for a in annotation:
-        f.write(a + '\n')
+        # Append new annotation line by line
+        for a in annotation:
+            if a is not None:
+                f.write(a + '\n')
 
-    # close the file after writing the lines.
-    f.close()
+        # close the file after writing the lines.
+        f.close()
+    except IOError:
+        print ("Warning: Unable to open & write annotation record for ID:{}".format(id))
+        pass
 
-#------------------------------------------------------------------------------
-# Add New Faces Functions
-#------------------------------------------------------------------------------
+def OptionForNewAnnotation(id, name):
+    """Prompt User to add new annotation if needed"""
+    annotation_request = "Would you like to add note for " + name + "?"
+    print(annotation_request)
+    addFlag = GetTextFromAudio(annotation_request)
 
+    annotations = []
+
+    while IsPositiveResponse(addFlag):
+        # Prompt user to input note
+        annotate = GetTextFromAudio("Please state your note")
+
+        # Save output to list
+        annotations.append(annotate)
+
+        # Continue 
+        continue_record_request = "Would you like to add more note?"
+        print(continue_record_request)
+
+        # Prompt for more annotation
+        addFlag = GetTextFromAudio(continue_record_request)
+
+    # Record annotation if there is any
+    if annotations:
+        annotateById(id, annotations)
 
 #------------------------------------------------------------------------------
 # Database functions
@@ -373,6 +406,22 @@ def GetAnnotationByFRId(id):
 
 
 #------------------------------------------------------------------------------
+# General Utility functions
+#------------------------------------------------------------------------------
+def IsPositiveResponse(response):
+    if response is None:
+        return False
+
+    if ( "yes"  in response.lower() or
+         "yup"  in response.lower() or
+         "yah"  in response.lower() or
+         "sure" in response.lower() or
+         "ok"   in response.lower() ):
+        return True
+    else:
+        return False
+
+#------------------------------------------------------------------------------
 # Cleanup Functions
 #------------------------------------------------------------------------------
 def GeneralCleanup():
@@ -387,8 +436,8 @@ def GeneralCleanup():
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
+        SetupSpeechEngine()
         FaceRecognitionWebcam()
         GeneralCleanup()
-
     except Exception as e:
         raise e

@@ -59,8 +59,6 @@ def getAnnotationByFRId1(id):
     print(rows[0])
     return rows[0]
 
-
-
 def main():
 
     getAnnotationByFRId1(1)

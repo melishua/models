@@ -120,10 +120,10 @@ def AddUnknownAsContact():
     global STARING_COUNTER
 
     contact_request = "Would you like to add this person as a contact?"
-    answer = getTextFromAudio(contact_request)
+    answer = GetTextFromAudio(contact_request)
     if "yes" in answer:
         name_request = "What is his or her name?"
-        name_of_unknown_person = getTextFromAudio(name_request)
+        name_of_unknown_person = GetTextFromAudio(name_request)
 
         # update person name
         # TODO: update in DB!
@@ -133,7 +133,7 @@ def AddUnknownAsContact():
                 KNOWN_FACE_NAMES[idx] = name_of_unknown_person
 
                 # confirm updated contact
-                contact_added = getTextFromAudio(name_of_unknown_person + "is added to your contact list.")
+                contact_added = GetTextFromAudio(name_of_unknown_person + "is added to your contact list.")
                 print("Here is the updated contact list:")
 
         print(KNOWN_FACE_NAMES)
@@ -232,7 +232,7 @@ def FaceRecognitionWebcam():
                 # Audio Notfication
                 # TODO: set up a timer for voice notification so we don't keep repeat ourselves
                 if PYTTSX3_OUTPUT_AUDIO:
-                    notifyNameAndInfo(name, best_match_index)
+                    NotifyNameAndInfo(name, best_match_index)
 
                 # Feature to add new person or annotation
 
@@ -271,7 +271,7 @@ def VoiceNotification(str_txt):
     speech_engn.say(str_txt)
     speech_engn.runAndWait()
 
-def notifyNameAndInfo(name, id):
+def NotifyNameAndInfo(name, id):
     notification = ""
     annotations = []
 
@@ -280,7 +280,7 @@ def notifyNameAndInfo(name, id):
         notification = "There is an unknown person in front you."
     else:
         notification = "This is " + name
-        annotations = readAnnotationFromId(id)
+        annotations = ReadAnnotationFromId(id)
 
     # Notify name
     VoiceNotification(notification)
@@ -292,7 +292,7 @@ def notifyNameAndInfo(name, id):
 #------------------------------------------------------------------------------
 # Speech Recognition Functions
 #------------------------------------------------------------------------------
-def getTextFromAudio(indicator):
+def GetTextFromAudio(indicator):
     with sr.Microphone() as source:
         VoiceNotification(indicator)
         audio = speech_recognizer.listen(source)
@@ -315,9 +315,9 @@ def getTextFromAudio(indicator):
 #------------------------------------------------------------------------------
 # Annotation Related Functions
 #------------------------------------------------------------------------------
-def readAnnotationFromId(id):
+def ReadAnnotationFromId(id):
     # Get matching annotation file from database
-    af, found = getAnnotationByFRId(id)
+    af, found = GetAnnotationByFRId(id)
 
     if found == False:
         return []
@@ -332,7 +332,7 @@ def readAnnotationFromId(id):
 
     return annotations
 
-def annotateById(id, annotation):
+def AnnotateById(id, annotation):
     # Get matching annotation file from database
     # af, found = 
 
@@ -359,7 +359,7 @@ def annotateById(id, annotation):
 # Database functions
 #------------------------------------------------------------------------------
 
-def getAnnotationByFRId(id):
+def GetAnnotationByFRId(id):
     # hardcode for now 
     personal_annotation = ANNOTATION_PATH + "/"+ str(id) + ".txt"
     if os.path.exists(personal_annotation) == True:
@@ -375,7 +375,7 @@ def getAnnotationByFRId(id):
 #------------------------------------------------------------------------------
 # Cleanup Functions
 #------------------------------------------------------------------------------
-def generalCleanup():
+def GeneralCleanup():
     # Turn off audio source
     speech_engn.stop()
     # Release handle to the webcam
@@ -388,7 +388,7 @@ def generalCleanup():
 if __name__ == "__main__":
     try:
         FaceRecognitionWebcam()
-        generalCleanup()
+        GeneralCleanup()
 
     except Exception as e:
         raise e

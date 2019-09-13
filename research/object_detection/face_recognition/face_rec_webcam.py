@@ -46,12 +46,18 @@ PYTTSX3_OUTPUT_AUDIO = not CV_SHOW_IMAGE_FLAG
 
 # Default path for adding new annotation file
 ANNOTATION_PATH = "./known_annotation"
+
+# Variables for adding unknown person
 LAST_UNKNOWN_PERSON = "Unknown"
 UNKNOWN_PERSON_IDX = 1
 STARING_COUNTER = 0
-STARING_THRESHOLD = 2
+STARING_THRESHOLD = 2       # Numbers of times seen unknown person to add into contact
 KNOWN_FACE_ENCODINGS = []
 KNOWN_FACE_NAMES = []
+
+# Seen Counter for Unknown Faces
+#   format: {'name':'# seen'}
+unknown_ppl_counters = {}
 
 #------------------------------------------------------------------------------
 # Environment Setup
@@ -89,40 +95,53 @@ def LoadFaceAndEncoding(known_ppl_pics):
 
 def SetupSpeechEngine():
     rate = speech_engn.getProperty('rate')
-    speech_engn.setProperty('rate', rate * 1.2)
+    speech_engn.setProperty('rate', rate * 1.225)
 
 #------------------------------------------------------------------------------
 # Function to record an unknown person
 #------------------------------------------------------------------------------
-def RecordUnknownPerson(face_encoding):
-    global UNKNOWN_PERSON_IDX
-    global LAST_UNKNOWN_PERSON
+def RecordUnknownPerson(face_encoding, unknown_id):
     global KNOWN_FACE_ENCODINGS
     global KNOWN_FACE_NAMES
+    global UNKNOWN_PERSON_IDX
 
-    #assign a name to his/her
-    person_name = "Unknown_" + str(UNKNOWN_PERSON_IDX)
+    # Assign a name to his/her
+    person_name = "Unknown_" + str(unknown_id)
 
-    #set LAST_UNKNOWN_PERSON to this person
-    LAST_UNKNOWN_PERSON = person_name
+    # Initialize value in unknown counter
+    if person_name in unknown_ppl_counters:
+        print("WARNING: unknown person should not be available in unknown_ppl_counters")
+    else:
+        unknown_ppl_counters[person_name] = 1
 
-    #TODO: save encoding in DB!
-    #save his/her face encoding
+    # TODO: save encoding in DB!
+    # ie. to save his/her face encoding
     KNOWN_FACE_NAMES.append(person_name)
     KNOWN_FACE_ENCODINGS.append(face_encoding)
 
-    print("I can recognize " + person_name + " now.")    
+    print("Unknown person added, I can recognize " + person_name + " now.")    
 
     #increment UNKNOWN_PERSON_IDX
     UNKNOWN_PERSON_IDX += 1
 
-def AddUnknownAsContact():
+def AddUnknownAsContact(unknown_id_name):
     global LAST_UNKNOWN_PERSON
     global KNOWN_FACE_NAMES
     global STARING_COUNTER
 
+    # Multiplication of STARING_THRESHOLD to make seen count negative
+    # if answer "no" to add contact
+    NEG_MULTI_OF_SEEN_THRES = 2
+
     contact_request = "Would you like to add this person as a contact?"
     answer = GetTextFromAudio(contact_request)
+
+    # Do nothing if user didn't answer the question. Another alternative is to remove the
+    # count, but since the voice recongition is flaky right now, let's assume that it is
+    # the speach engine that's unable to catch the response.
+    if answer is None:
+        return
+
     if "yes" in answer:
         name_request = "What is his or her name?"
         name_of_unknown_person = GetTextFromAudio(name_request)
@@ -144,11 +163,18 @@ def AddUnknownAsContact():
         # TODO: more handling should go in to this
         STARING_COUNTER = 0
 
+        # Remove this user from unknown_ppl_counters
+        del unknown_ppl_counters[unknown_id_name]
+
     else:
         # restart counting since we didn't want to add this person
         # TODO: more handling should go in to this
         STARING_COUNTER = 0
-        print("No person is added to your contact.")
+
+        # Make seen count negative as user answers "no", user will have to see
+        # see this person more often for the question to prompt
+        unknown_ppl_counters[unknown_id_name] = - NEG_MULTI_OF_SEEN_THRES * STARING_THRESHOLD
+        print("No one is added to your contact.")
 
 #------------------------------------------------------------------------------
 # Face Recongition Function
@@ -204,26 +230,28 @@ def FaceRecognitionWebcam():
                     # Or instead, use the known face with the smallest distance to the new face
                     face_distances = face_recognition.face_distance(KNOWN_FACE_ENCODINGS, face_encoding)
                     best_match_index = np.argmin(face_distances)
+
                     if matches[best_match_index] and face_distances[best_match_index] < 0.5:
                         name = KNOWN_FACE_NAMES[best_match_index]
 
-                        # count the number of times this unknown person is seen consecutively
-                        if name == LAST_UNKNOWN_PERSON:
-                            # increment STARING_COUNTER for this particular unknown person
-                            STARING_COUNTER += 1
-                            print("STARING_COUNTER is: " + str(STARING_COUNTER))
+                        # Count the number of times this unknown person is seen
+                        if "unknown" in name.lower() and name in unknown_ppl_counters:
+                            unknown_ppl_counters[name] += 1
+
+                            print("STARING_COUNTER is: " + str(unknown_ppl_counters[name]))
 
                             # if you continue to stare at this unknown person
                             # i.e. might be having a conversation with
                             # prompt to add this person as a contact
-                            if STARING_COUNTER > STARING_THRESHOLD:
-                                AddUnknownAsContact()
-
+                            if unknown_ppl_counters[name] > STARING_THRESHOLD:
+                                AddUnknownAsContact(name)
+                        elif "unknown" in name.lower():
+                            print ("DEBUG: warning, this is not correct, name should be in unknown_ppl_counters")
                     else:
                         #TODO: we should associate staring counter with each unknown person in DB
                         # Since we are now looking at another unknown person, restart counting
                         STARING_COUNTER = 0
-                        RecordUnknownPerson(face_encoding)
+                        RecordUnknownPerson(face_encoding, UNKNOWN_PERSON_IDX)
                         #increment STARING_COUNTER for this particular unknown person
                         STARING_COUNTER += 1
                         print("recognized new unknown person: " + LAST_UNKNOWN_PERSON)
@@ -276,7 +304,7 @@ def VoiceNotification(str_txt):
     speech_engn.say(str_txt)
     speech_engn.runAndWait()
 
-def NotifyNameAndInfo(name, id):
+def NotifyNameAndInfo(name, idx):
     notification = ""
     annotations = []
 
@@ -285,7 +313,7 @@ def NotifyNameAndInfo(name, id):
         notification = "There is an unknown person in front you."
     else:
         notification = "This is " + name
-        annotations = ReadAnnotationFromId(id)
+        annotations = ReadAnnotationFromId(idx)
 
     # Notify name
     VoiceNotification(notification)
@@ -322,9 +350,9 @@ def GetTextFromAudio(indicator):
 #------------------------------------------------------------------------------
 # Annotation Related Functions
 #------------------------------------------------------------------------------
-def ReadAnnotationFromId(id):
+def ReadAnnotationFromId(idx):
     # Get matching annotation file from database
-    af, found = GetAnnotationByFRId(id)
+    af, found = GetAnnotationByFRId(idx)
 
     if found == False:
         return []
@@ -339,30 +367,30 @@ def ReadAnnotationFromId(id):
 
     return annotations
 
-def AnnotateById(id, annotation):
+def AnnotateById(idx, annotations):
     # Get matching annotation file from database
-    af, found = GetAnnotationByFRId(id)
+    af, found = GetAnnotationByFRId(idx)
 
     try:
         f = open(af, "a+")
 
         # Create new file if annotation not found
         if not found:
-            af = ANNOTATION_PATH + name + ".txt"
+            af = ANNOTATION_PATH + idx + ".txt"
             f = open(af, "w+") 
 
         # Append new annotation line by line
-        for a in annotation:
+        for a in annotations:
             if a is not None:
                 f.write(a + '\n')
 
         # close the file after writing the lines.
         f.close()
     except IOError:
-        print ("Warning: Unable to open & write annotation record for ID:{}".format(id))
+        print ("Warning: Unable to open & write annotation record for ID:{}".format(idx))
         pass
 
-def OptionForNewAnnotation(id, name):
+def OptionForNewAnnotation(idx, name):
     """Prompt User to add new annotation if needed"""
     annotation_request = "Would you like to add note for " + name + "?"
     print(annotation_request)
@@ -386,15 +414,15 @@ def OptionForNewAnnotation(id, name):
 
     # Record annotation if there is any
     if annotations:
-        annotateById(id, annotations)
+        AnnotateById(idx, annotations)
 
 #------------------------------------------------------------------------------
 # Database functions
 #------------------------------------------------------------------------------
 
-def GetAnnotationByFRId(id):
+def GetAnnotationByFRId(idx):
     # hardcode for now 
-    personal_annotation = ANNOTATION_PATH + "/"+ str(id) + ".txt"
+    personal_annotation = ANNOTATION_PATH + "/"+ str(idx) + ".txt"
     if os.path.exists(personal_annotation) == True:
         return (personal_annotation, True)
     else:

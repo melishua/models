@@ -48,7 +48,6 @@ PYTTSX3_OUTPUT_AUDIO = not CV_SHOW_IMAGE_FLAG
 ANNOTATION_PATH = "./known_annotation"
 
 # Variables for adding unknown person
-LAST_UNKNOWN_PERSON = "Unknown"
 UNKNOWN_PERSON_IDX = 1
 STARING_THRESHOLD = 2       # Numbers of times seen unknown person to add into contact
 KNOWN_FACE_ENCODINGS = []
@@ -128,7 +127,6 @@ def RecordUnknownPerson(face_encoding, unknown_id):
     return person_name
 
 def AddUnknownAsContact(unknown_id_name):
-    global LAST_UNKNOWN_PERSON
     global KNOWN_FACE_NAMES
 
     # Multiplication of STARING_THRESHOLD to make seen count negative
@@ -151,7 +149,7 @@ def AddUnknownAsContact(unknown_id_name):
         # update person name
         # TODO: update in DB!
         for idx, known_face_name in enumerate(KNOWN_FACE_NAMES):
-            if LAST_UNKNOWN_PERSON in known_face_name:
+            if unknown_id_name in known_face_name:
                 print("Update " + known_face_name + " to " + name_of_unknown_person)
                 KNOWN_FACE_NAMES[idx] = name_of_unknown_person
 
@@ -244,7 +242,7 @@ def FaceRecognitionWebcam():
                         #TODO: we should associate staring counter with each unknown person in DB
                         unknown_name = RecordUnknownPerson(face_encoding, UNKNOWN_PERSON_IDX)
 
-                        print("Recognized new unknown person: " + LAST_UNKNOWN_PERSON)
+                        print("Recognized new unknown person: " + unknown_name)
                         print("Staring counter is: " + str(unknown_ppl_counters[unknown_name]))
 
                 face_names.append(name)

@@ -7,66 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C6D050492375EFA600F07900 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D050482375EFA600F07900 /* AppDelegate.swift */; };
-		C6D0504B2375EFA600F07900 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0504A2375EFA600F07900 /* ContentView.swift */; };
-		C6D0504D2375EFA600F07900 /* Experience.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = C6D0504C2375EFA600F07900 /* Experience.rcproject */; };
-		C6D0504F2375EFA800F07900 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6D0504E2375EFA800F07900 /* Assets.xcassets */; };
-		C6D050522375EFA800F07900 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6D050512375EFA800F07900 /* Preview Assets.xcassets */; };
-		C6D050552375EFA800F07900 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6D050532375EFA800F07900 /* LaunchScreen.storyboard */; };
-		C6D050602375EFA900F07900 /* ProsopagnosiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0505F2375EFA900F07900 /* ProsopagnosiaTests.swift */; };
-		C6D0506B2375EFA900F07900 /* ProsopagnosiaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0506A2375EFA900F07900 /* ProsopagnosiaUITests.swift */; };
+		C6D050852375F4A100F07900 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D050842375F4A100F07900 /* AppDelegate.swift */; };
+		C6D050872375F4A100F07900 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = C6D050862375F4A100F07900 /* art.scnassets */; };
+		C6D050892375F4A100F07900 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D050882375F4A100F07900 /* ViewController.swift */; };
+		C6D0508C2375F4A100F07900 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6D0508A2375F4A100F07900 /* Main.storyboard */; };
+		C6D0508E2375F4A200F07900 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6D0508D2375F4A200F07900 /* Assets.xcassets */; };
+		C6D050912375F4A200F07900 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6D0508F2375F4A200F07900 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		C6D0505C2375EFA800F07900 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C6D0503D2375EFA600F07900 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C6D050442375EFA600F07900;
-			remoteInfo = Prosopagnosia;
-		};
-		C6D050672375EFA900F07900 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C6D0503D2375EFA600F07900 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C6D050442375EFA600F07900;
-			remoteInfo = Prosopagnosia;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		C6D050452375EFA600F07900 /* Prosopagnosia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prosopagnosia.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6D050482375EFA600F07900 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C6D0504A2375EFA600F07900 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		C6D0504C2375EFA600F07900 /* Experience.rcproject */ = {isa = PBXFileReference; lastKnownFileType = file.rcproject; path = Experience.rcproject; sourceTree = "<group>"; };
-		C6D0504E2375EFA800F07900 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C6D050512375EFA800F07900 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		C6D050542375EFA800F07900 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		C6D050562375EFA800F07900 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C6D0505B2375EFA800F07900 /* ProsopagnosiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProsopagnosiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6D0505F2375EFA900F07900 /* ProsopagnosiaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProsopagnosiaTests.swift; sourceTree = "<group>"; };
-		C6D050612375EFA900F07900 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C6D050662375EFA900F07900 /* ProsopagnosiaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProsopagnosiaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6D0506A2375EFA900F07900 /* ProsopagnosiaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProsopagnosiaUITests.swift; sourceTree = "<group>"; };
-		C6D0506C2375EFA900F07900 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C6D050812375F4A100F07900 /* Prosopagnosia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prosopagnosia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6D050842375F4A100F07900 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C6D050862375F4A100F07900 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
+		C6D050882375F4A100F07900 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		C6D0508B2375F4A100F07900 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C6D0508D2375F4A200F07900 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C6D050902375F4A200F07900 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C6D050922375F4A200F07900 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		C6D050422375EFA600F07900 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C6D050582375EFA800F07900 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C6D050632375EFA900F07900 /* Frameworks */ = {
+		C6D0507E2375F4A100F07900 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -76,76 +37,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C6D0503C2375EFA600F07900 = {
+		C6D050782375F4A100F07900 = {
 			isa = PBXGroup;
 			children = (
-				C6D050472375EFA600F07900 /* Prosopagnosia */,
-				C6D0505E2375EFA900F07900 /* ProsopagnosiaTests */,
-				C6D050692375EFA900F07900 /* ProsopagnosiaUITests */,
-				C6D050462375EFA600F07900 /* Products */,
+				C6D050832375F4A100F07900 /* Prosopagnosia */,
+				C6D050822375F4A100F07900 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		C6D050462375EFA600F07900 /* Products */ = {
+		C6D050822375F4A100F07900 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C6D050452375EFA600F07900 /* Prosopagnosia.app */,
-				C6D0505B2375EFA800F07900 /* ProsopagnosiaTests.xctest */,
-				C6D050662375EFA900F07900 /* ProsopagnosiaUITests.xctest */,
+				C6D050812375F4A100F07900 /* Prosopagnosia.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C6D050472375EFA600F07900 /* Prosopagnosia */ = {
+		C6D050832375F4A100F07900 /* Prosopagnosia */ = {
 			isa = PBXGroup;
 			children = (
-				C6D050482375EFA600F07900 /* AppDelegate.swift */,
-				C6D0504A2375EFA600F07900 /* ContentView.swift */,
-				C6D0504C2375EFA600F07900 /* Experience.rcproject */,
-				C6D0504E2375EFA800F07900 /* Assets.xcassets */,
-				C6D050532375EFA800F07900 /* LaunchScreen.storyboard */,
-				C6D050562375EFA800F07900 /* Info.plist */,
-				C6D050502375EFA800F07900 /* Preview Content */,
+				C6D050842375F4A100F07900 /* AppDelegate.swift */,
+				C6D050862375F4A100F07900 /* art.scnassets */,
+				C6D050882375F4A100F07900 /* ViewController.swift */,
+				C6D0508A2375F4A100F07900 /* Main.storyboard */,
+				C6D0508D2375F4A200F07900 /* Assets.xcassets */,
+				C6D0508F2375F4A200F07900 /* LaunchScreen.storyboard */,
+				C6D050922375F4A200F07900 /* Info.plist */,
 			);
 			path = Prosopagnosia;
-			sourceTree = "<group>";
-		};
-		C6D050502375EFA800F07900 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				C6D050512375EFA800F07900 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		C6D0505E2375EFA900F07900 /* ProsopagnosiaTests */ = {
-			isa = PBXGroup;
-			children = (
-				C6D0505F2375EFA900F07900 /* ProsopagnosiaTests.swift */,
-				C6D050612375EFA900F07900 /* Info.plist */,
-			);
-			path = ProsopagnosiaTests;
-			sourceTree = "<group>";
-		};
-		C6D050692375EFA900F07900 /* ProsopagnosiaUITests */ = {
-			isa = PBXGroup;
-			children = (
-				C6D0506A2375EFA900F07900 /* ProsopagnosiaUITests.swift */,
-				C6D0506C2375EFA900F07900 /* Info.plist */,
-			);
-			path = ProsopagnosiaUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C6D050442375EFA600F07900 /* Prosopagnosia */ = {
+		C6D050802375F4A100F07900 /* Prosopagnosia */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C6D0506F2375EFA900F07900 /* Build configuration list for PBXNativeTarget "Prosopagnosia" */;
+			buildConfigurationList = C6D050952375F4A200F07900 /* Build configuration list for PBXNativeTarget "Prosopagnosia" */;
 			buildPhases = (
-				C6D050412375EFA600F07900 /* Sources */,
-				C6D050422375EFA600F07900 /* Frameworks */,
-				C6D050432375EFA600F07900 /* Resources */,
+				C6D0507D2375F4A100F07900 /* Sources */,
+				C6D0507E2375F4A100F07900 /* Frameworks */,
+				C6D0507F2375F4A100F07900 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -153,68 +84,25 @@
 			);
 			name = Prosopagnosia;
 			productName = Prosopagnosia;
-			productReference = C6D050452375EFA600F07900 /* Prosopagnosia.app */;
+			productReference = C6D050812375F4A100F07900 /* Prosopagnosia.app */;
 			productType = "com.apple.product-type.application";
-		};
-		C6D0505A2375EFA800F07900 /* ProsopagnosiaTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C6D050722375EFA900F07900 /* Build configuration list for PBXNativeTarget "ProsopagnosiaTests" */;
-			buildPhases = (
-				C6D050572375EFA800F07900 /* Sources */,
-				C6D050582375EFA800F07900 /* Frameworks */,
-				C6D050592375EFA800F07900 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C6D0505D2375EFA800F07900 /* PBXTargetDependency */,
-			);
-			name = ProsopagnosiaTests;
-			productName = ProsopagnosiaTests;
-			productReference = C6D0505B2375EFA800F07900 /* ProsopagnosiaTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		C6D050652375EFA900F07900 /* ProsopagnosiaUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C6D050752375EFA900F07900 /* Build configuration list for PBXNativeTarget "ProsopagnosiaUITests" */;
-			buildPhases = (
-				C6D050622375EFA900F07900 /* Sources */,
-				C6D050632375EFA900F07900 /* Frameworks */,
-				C6D050642375EFA900F07900 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C6D050682375EFA900F07900 /* PBXTargetDependency */,
-			);
-			name = ProsopagnosiaUITests;
-			productName = ProsopagnosiaUITests;
-			productReference = C6D050662375EFA900F07900 /* ProsopagnosiaUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		C6D0503D2375EFA600F07900 /* Project object */ = {
+		C6D050792375F4A100F07900 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1120;
 				LastUpgradeCheck = 1120;
+				ORGANIZATIONNAME = "the prosopagnosia team";
 				TargetAttributes = {
-					C6D050442375EFA600F07900 = {
+					C6D050802375F4A100F07900 = {
 						CreatedOnToolsVersion = 11.2;
-					};
-					C6D0505A2375EFA800F07900 = {
-						CreatedOnToolsVersion = 11.2;
-						TestTargetID = C6D050442375EFA600F07900;
-					};
-					C6D050652375EFA900F07900 = {
-						CreatedOnToolsVersion = 11.2;
-						TestTargetID = C6D050442375EFA600F07900;
 					};
 				};
 			};
-			buildConfigurationList = C6D050402375EFA600F07900 /* Build configuration list for PBXProject "Prosopagnosia" */;
+			buildConfigurationList = C6D0507C2375F4A100F07900 /* Build configuration list for PBXProject "Prosopagnosia" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -222,92 +110,55 @@
 				en,
 				Base,
 			);
-			mainGroup = C6D0503C2375EFA600F07900;
-			productRefGroup = C6D050462375EFA600F07900 /* Products */;
+			mainGroup = C6D050782375F4A100F07900;
+			productRefGroup = C6D050822375F4A100F07900 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C6D050442375EFA600F07900 /* Prosopagnosia */,
-				C6D0505A2375EFA800F07900 /* ProsopagnosiaTests */,
-				C6D050652375EFA900F07900 /* ProsopagnosiaUITests */,
+				C6D050802375F4A100F07900 /* Prosopagnosia */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		C6D050432375EFA600F07900 /* Resources */ = {
+		C6D0507F2375F4A100F07900 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C6D050552375EFA800F07900 /* LaunchScreen.storyboard in Resources */,
-				C6D050522375EFA800F07900 /* Preview Assets.xcassets in Resources */,
-				C6D0504F2375EFA800F07900 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C6D050592375EFA800F07900 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C6D050642375EFA900F07900 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				C6D050872375F4A100F07900 /* art.scnassets in Resources */,
+				C6D050912375F4A200F07900 /* LaunchScreen.storyboard in Resources */,
+				C6D0508E2375F4A200F07900 /* Assets.xcassets in Resources */,
+				C6D0508C2375F4A100F07900 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		C6D050412375EFA600F07900 /* Sources */ = {
+		C6D0507D2375F4A100F07900 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C6D0504B2375EFA600F07900 /* ContentView.swift in Sources */,
-				C6D050492375EFA600F07900 /* AppDelegate.swift in Sources */,
-				C6D0504D2375EFA600F07900 /* Experience.rcproject in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C6D050572375EFA800F07900 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C6D050602375EFA900F07900 /* ProsopagnosiaTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C6D050622375EFA900F07900 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C6D0506B2375EFA900F07900 /* ProsopagnosiaUITests.swift in Sources */,
+				C6D050892375F4A100F07900 /* ViewController.swift in Sources */,
+				C6D050852375F4A100F07900 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		C6D0505D2375EFA800F07900 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C6D050442375EFA600F07900 /* Prosopagnosia */;
-			targetProxy = C6D0505C2375EFA800F07900 /* PBXContainerItemProxy */;
-		};
-		C6D050682375EFA900F07900 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C6D050442375EFA600F07900 /* Prosopagnosia */;
-			targetProxy = C6D050672375EFA900F07900 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
-		C6D050532375EFA800F07900 /* LaunchScreen.storyboard */ = {
+		C6D0508A2375F4A100F07900 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				C6D050542375EFA800F07900 /* Base */,
+				C6D0508B2375F4A100F07900 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		C6D0508F2375F4A200F07900 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C6D050902375F4A200F07900 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -315,7 +166,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		C6D0506D2375EFA900F07900 /* Debug */ = {
+		C6D050932375F4A200F07900 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -375,7 +226,7 @@
 			};
 			name = Debug;
 		};
-		C6D0506E2375EFA900F07900 /* Release */ = {
+		C6D050942375F4A200F07900 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -429,14 +280,12 @@
 			};
 			name = Release;
 		};
-		C6D050702375EFA900F07900 /* Debug */ = {
+		C6D050962375F4A200F07900 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Prosopagnosia/Preview Content\"";
 				DEVELOPMENT_TEAM = 2WU5NQ4DKT;
-				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Prosopagnosia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -449,14 +298,12 @@
 			};
 			name = Debug;
 		};
-		C6D050712375EFA900F07900 /* Release */ = {
+		C6D050972375F4A200F07900 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Prosopagnosia/Preview Content\"";
 				DEVELOPMENT_TEAM = 2WU5NQ4DKT;
-				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Prosopagnosia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -466,133 +313,31 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		C6D050732375EFA900F07900 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2WU5NQ4DKT;
-				INFOPLIST_FILE = ProsopagnosiaTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "the-prosopagnosia-team.ProsopagnosiaTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Prosopagnosia.app/Prosopagnosia";
-			};
-			name = Debug;
-		};
-		C6D050742375EFA900F07900 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2WU5NQ4DKT;
-				INFOPLIST_FILE = ProsopagnosiaTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "the-prosopagnosia-team.ProsopagnosiaTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Prosopagnosia.app/Prosopagnosia";
-			};
-			name = Release;
-		};
-		C6D050762375EFA900F07900 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2WU5NQ4DKT;
-				INFOPLIST_FILE = ProsopagnosiaUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "the-prosopagnosia-team.ProsopagnosiaUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Prosopagnosia;
-			};
-			name = Debug;
-		};
-		C6D050772375EFA900F07900 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2WU5NQ4DKT;
-				INFOPLIST_FILE = ProsopagnosiaUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "the-prosopagnosia-team.ProsopagnosiaUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Prosopagnosia;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C6D050402375EFA600F07900 /* Build configuration list for PBXProject "Prosopagnosia" */ = {
+		C6D0507C2375F4A100F07900 /* Build configuration list for PBXProject "Prosopagnosia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C6D0506D2375EFA900F07900 /* Debug */,
-				C6D0506E2375EFA900F07900 /* Release */,
+				C6D050932375F4A200F07900 /* Debug */,
+				C6D050942375F4A200F07900 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C6D0506F2375EFA900F07900 /* Build configuration list for PBXNativeTarget "Prosopagnosia" */ = {
+		C6D050952375F4A200F07900 /* Build configuration list for PBXNativeTarget "Prosopagnosia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C6D050702375EFA900F07900 /* Debug */,
-				C6D050712375EFA900F07900 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C6D050722375EFA900F07900 /* Build configuration list for PBXNativeTarget "ProsopagnosiaTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C6D050732375EFA900F07900 /* Debug */,
-				C6D050742375EFA900F07900 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C6D050752375EFA900F07900 /* Build configuration list for PBXNativeTarget "ProsopagnosiaUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C6D050762375EFA900F07900 /* Debug */,
-				C6D050772375EFA900F07900 /* Release */,
+				C6D050962375F4A200F07900 /* Debug */,
+				C6D050972375F4A200F07900 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = C6D0503D2375EFA600F07900 /* Project object */;
+	rootObject = C6D050792375F4A100F07900 /* Project object */;
 }

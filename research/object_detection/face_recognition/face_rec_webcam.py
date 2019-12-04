@@ -31,18 +31,22 @@ import re
 import glob
 import speech_recognition as sr
 from os import path
+import math 
 
 #------------------------------------------------------------------------------
 # Constants / Global Declaration
 #------------------------------------------------------------------------------
 # Flag for showing video stream
-CV_SHOW_IMAGE_FLAG = False # Keep false until cv2 crash is resolved
+CV_SHOW_IMAGE_FLAG = True # Keep false until cv2 crash is resolved
 # Flag for outputing audio notification
 # *TODO*: 
 #   The problem crush currently when both video and audio output is enable!!!!
 #   So PYTTSX3_OUTPUT_AUDIO is set to !(CV_SHOW_IMAGE_FLAG) for now. The value
 #   can be change to specific value when the bug is fixed.
 PYTTSX3_OUTPUT_AUDIO = not CV_SHOW_IMAGE_FLAG
+
+SINGLE_DETACTION = True
+fixation = (0, 0)
 
 # Default path for adding new annotation file
 ANNOTATION_PATH = "./known_annotation"
@@ -205,7 +209,15 @@ def FaceRecognitionWebcam():
         if process_this_frame:
             # Find all the faces and face encodings in the current frame of video
             face_locations = face_recognition.face_locations(rgb_small_frame)
-            face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
+
+            if SINGLE_DETACTION:
+                if len(face_locations) > 1:
+                    index = getFaceIndex(face_locations)
+                    face_encodings = face_recognition.face_encodings(rgb_small_frame, [face_locations[index]])
+                else:
+                    face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
+
+
 
             face_names = []
             for face_encoding in face_encodings:
@@ -284,6 +296,15 @@ def FaceRecognitionWebcam():
 
         # Update frame control knob
         process_this_frame = not process_this_frame
+
+#return the index of the face that is closest to fixation in face_locations
+def getFaceIndex(face_locations):
+    fixation_distances = []
+    for coordinate in face_locations:
+        print(coordinate[0], coordinate[1])
+        fixation_distances.append((int(coordinate[0]) - fixation[0])**2 + (int(coordinate[1]) - fixation[1])**2)
+    return fixation_distances.index(min(fixation_distances))
+
 
 #------------------------------------------------------------------------------
 # Voice Notification Functions
@@ -452,7 +473,7 @@ def GeneralCleanup():
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        SetupSpeechEngine()
+        # SetupSpeechEngine()
         FaceRecognitionWebcam()
         GeneralCleanup()
     except Exception as e:
